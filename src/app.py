@@ -89,7 +89,11 @@ def add_favorite_planet(planet_id):
     if user is None:
         raise APIException("User not found", status_code=404)
     
-    favorite = Favorite(name="planet", user_id=user_id, planet_id=planet_id)
+    planet = Planet.query.get(planet_id)
+    if planet is None:
+        raise APIException("Planet not found", status_code=404)
+    
+    favorite = Favorite(name=planet.name, user_id=user_id, planet_id=planet_id)
     db.session.add(favorite)
     db.session.commit()
     
@@ -102,7 +106,11 @@ def add_favorite_people(people_id):
     if user is None:
         raise APIException("User not found", status_code=404)
     
-    favorite = Favorite(name="people", user_id=user_id, character_id=people_id)
+    character = Character.query.get(people_id)
+    if character is None:
+        raise APIException("Character not found", status_code=404)
+    
+    favorite = Favorite(name=character.name, user_id=user_id, character_id=people_id)
     db.session.add(favorite)
     db.session.commit()
     
