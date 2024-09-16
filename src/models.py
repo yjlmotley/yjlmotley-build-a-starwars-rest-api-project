@@ -25,7 +25,11 @@ class Favorite(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
     character_id = db.Column(db.Integer, db.ForeignKey('character.id'))
-    user = db.relationship("User", backref='favorites')
+    # db.relationship() establishes a connection/association between the two tables
+    #   it allows you to access related rows from a different model from this model
+    # db.relationship("User", backref='favorites') creates a reverse relationship from the User model back to the Favorite model.
+    #   The backref adds a dynamic attribute favorites to the User class, allowing a user object to access all of its related favorites as a list.
+    user = db.relationship("User", backref='favorites') # one to many relationship
     planet = db.relationship("Planet", backref='favorites')
     character = db.relationship("Character", backref='favorites')
 
@@ -34,8 +38,8 @@ class Favorite(db.Model):
             "id": self.id,
             "name": self.name,
             "user_id": self.user_id,
-            "character_id": self.character_id,
-            "planet_id": self.planet_id
+            "character": self.character.serialize() if self.character else None,
+            "planet": self.planet.serialize() if self.planet else None
         }
 
 class Character(db.Model):
@@ -76,7 +80,7 @@ class Planet(db.Model):
     population = db.Column(db.Integer)
     climate = db.Column(db.String(20))
     terrain = db.Column(db.String(20))
-    surface_water = db.Column(db.String)
+    surface_water = db.Column(db.String(20))
     planet_pic = db.Column(db.String(250))
 
     def serialize(self):
