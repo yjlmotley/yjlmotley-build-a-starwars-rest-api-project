@@ -121,8 +121,7 @@ def add_favorite_planet(planet_id):
 @app.route('/favorite/people/<int:people_id>', methods=['DELETE'])
 def remove_favorite_people(people_id):
     user_id = request.args.get('user_id')
-    if user is None:
-        raise APIException("User not found", status_code=404)
+    
     favorite = Favorite.query.filter_by(user_id=user_id, character_id=people_id).first()
     if favorite is None:
         raise APIException("Favorite people not found", status_code=404)
